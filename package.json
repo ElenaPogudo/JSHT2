@@ -1,0 +1,22 @@
+{
+  "name": "jsht2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ElenaPogudo/JSHT2.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ElenaPogudo/JSHT2/issues"
+  },
+  "homepage": "https://github.com/ElenaPogudo/JSHT2#readme",
+  "dependencies": {
+    "jsonfile": "^4.0.0"
+  }
+}
