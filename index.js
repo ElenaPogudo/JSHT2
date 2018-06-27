@@ -21,10 +21,10 @@ const argv = require('yargs')
             .example('$0 remove --t "title"')
             .demandOption(['t'])
     })
-    // .command('writetoexcel', 'Change note by title', function (yargs) {
-    //     yargs
-    //         .example('$0 writetoexcel')
-    // })
+    .command('writetoexcel', 'Change note by title', function (yargs) {
+        yargs
+            .example('$0 writetoexcel')
+    })
     // .command('readfromexcel', 'Change note by title', function (yargs) {
     //     yargs
     //         .example('$0 readfromexcel')
@@ -71,9 +71,9 @@ function main() {
         case 'sort':
             console.log(notes.sort(kindOfSort, optionsOfSort));
             break;
-        // case 'writetoexcel':
-        //     console.log(notes.writetoexcel());
-        //     break;
+        case 'writetoexcel':
+            console.log(notes.writetoexcel());
+            break;
         // case 'readfromexcel':
         //     console.log(notes.readfromexcel());
         //     break;
