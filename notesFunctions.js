@@ -66,9 +66,13 @@ function writeToExcel() {
 }
 
 function readFromExcel() {
+
     const workbook = XLSX.readFile(pathToNotesExcelFile);
     const sheet_name_list = workbook.SheetNames;
-    rw.adder (JSON.stringify (XLSX.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]]), null, 2));
+    XLSX.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]]).forEach(function (element) {
+        let note = notesList.find(el => el.title === element.title);
+        if(note===undefined){notesList.push(element)}});
+    rw.writer(JSON.stringify(notesList , null, 2));
 
     return 'Your notes was SUCCESSFULLY READ from excel file';
 }
