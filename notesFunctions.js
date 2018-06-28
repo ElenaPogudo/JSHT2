@@ -1,17 +1,19 @@
-const fs = require('fs');
+'use strict';
 const xl = require('excel4node');
-const rw= require('./ReadWrite');
+const XLSX = require('xlsx');
+const rw = require('./ReadWrite');
 const sorter = require('./sorter.js');
 
 const pathToNotesFile = './resources/notes.json';
 const notesList = require(pathToNotesFile);
+const pathToNotesExcelFile = './resources/Excel.xlsx';
 
 function addNote(newNote) {
     const note = notesList.find(el => el.title === newNote.title);
     if (note === undefined) {
         notesList.push(newNote);
         rw.writer(JSON.stringify(notesList, null, 2));
-        return `The note with title [${newNote.title}] has been added successfully to the notes list`;
+        return `The note with title [${newNote.title}] was ADDED successfully to the notes list`;
     }
     return `The note with title [${newNote.title}] is already in the notes list. You can add notes only with unique titles.`;
 }
@@ -31,7 +33,7 @@ function removeNote(title) {
     if (index > -1) {
         notesList.splice(index, 1);
         rw.writer(JSON.stringify(notesList, null, 2));
-        return `The note with title [${title}] has been deleted successfully`;
+        return `The note with title [${title}] has been DELETED SUCCESSFULLY`;
     } else {
         return `There is no note with title [${title}] in the notes list`;
     }
@@ -41,34 +43,52 @@ function sortNotes(kind, arg) {
     if (notesList.length === 0) {
         return `The list is empty.`
     } else {
-        //const sortedList=JSON.stringify(sorter.sort(notesList, kind, arg), null, 2);
-        rw.writer(JSON.stringify(sorter.sort(notesList, kind, arg), null, 2));
-        return `Sorted notes: ${JSON.stringify(sorter.sort(notesList, kind, arg), null, 2)}`;
+        const sortedList = JSON.stringify(sorter.sort(notesList, kind, arg), null, 2);
+        rw.writer(sortedList);
+        return `Sorted notes: ${sortedList}`;
     }
 }
-
 
 function writeToExcel() {
     const wb = new xl.Workbook();
     const ws = wb.addWorksheet('Sheet1');
-
+    ws.cell(1, 1).string('title');
+    ws.cell(1, 2).string('body');
+    ws.cell(1, 3).string('date');
     notesList.forEach(function (element, i) {
-        ws.cell(i+1, 1).string(element.title.toString());
-        ws.cell(i+1, 2).string(element.body.toString());
-        ws.cell(i+1, 3).string(element.date);
-        wb.write('./resources/Excel.xlsx');
+        ws.cell(i + 2, 1).string(element.title.toString());
+        ws.cell(i + 2, 2).string(element.body.toString());
+        ws.cell(i + 2, 3).string(element.date);
+        wb.write(pathToNotesExcelFile);
     })
 
-    return 'Your notes was successfully write to excel file';
+    return 'Your notes was SUCCESSFULLY WRITE to excel file';
 }
 
-// function readFromExcel() {
-//     const wb = xl.Workbook();
-//     wb.write('Excel.xlsx', function () {
-//             console.log(xl.getExcelRowCol('B2'));
-//     });
-//     return 'Your notes was successfully reads from excel file';
-// }
+function readFromExcel() {
+    const workbook = XLSX.readFile(pathToNotesExcelFile);
+    const sheet_name_list = workbook.SheetNames;
+    rw.adder (JSON.stringify (XLSX.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]]), null, 2));
+
+    return 'Your notes was SUCCESSFULLY READ from excel file';
+}
+
+function updateNote(chNote, newTitle) {
+    const note = notesList.find(element => element.title === chNote.title);
+    if (note === undefined) {
+        notesList.push(chNote);
+        rw.writer(JSON.stringify(notesList, null, 2));
+        return `The new note with title [${chNote.title}] has been ADDED SUCCESSFULLY to the notes list`;
+    }
+    if (newTitle !== undefined) {
+        note.title = newTitle;
+    }
+    note.date = chNote.date;
+    note.body = chNote.body;
+    rw.writer(JSON.stringify(notesList, null, 2));
+    return `The note with title [${chNote.title}] was SUCCESSFULLY UPDATED`;
+
+}
 
 const notes = {
     add: (note) => {
@@ -89,9 +109,12 @@ const notes = {
     writetoexcel: () => {
         return writeToExcel()
     },
-    // readfromexcel: () => {
-    //     return readFromExcel()
-    // }
+    readfromexcel: () => {
+        return readFromExcel()
+    },
+    fau: (note, newTitle) => {
+        return updateNote(note, newTitle)
+    }
 };
 
 module.exports = notes;

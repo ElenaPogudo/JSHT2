@@ -1,31 +1,32 @@
-function SorterUp(list, kind) {
+'use strict';
+function SorterDown(list, kind) {
     switch (kind) {
-        case 'date': case 'd':
+        case 'date':
         return list.sort((a, b) =>  a.date < b.date );
 
-        case 'note length': case 'nlength': case 'nl':
+        case 'notelength':
         return list.sort((a, b) =>  a.body.toString().length < b.body.toString().length);
 
-        case 'title length': case 'tlength': case 'tl':
+        case 'titlelength':
         return list.sort((a, b) =>  a.title.toString().length < b.title.toString().length);
 
-        case 'title alphabet': case 'talph': case 'ta':
+        case 'title':
         return list.sort((a, b)=> a.title.toString() < b.title.toString());
     }
 }
 
-function SorterDown(list, kind) {
+function SorterUp(list, kind) {
     switch (kind) {
-        case 'date': case 'd':
+        case 'date':
         return list.sort((a, b) => a.date > b.date );
 
-        case 'note length': case 'nlength': case 'nl':
+        case 'notelength':
         return list.sort((a, b) => a.body.toString().length > b.body.toString().length);
 
-        case 'title length': case 'tlength': case 'tl':
+        case 'titlelength':
         return list.sort((a, b) => a.title.toString().length > b.title.toString().length);
 
-        case 'title alphabet': case 'talph': case 'ta':
+        case 'title':
         return list.sort((a, b)=>a.title.toString() > b.title.toString());
     }
 }
@@ -38,9 +39,7 @@ function sort(list, kind, arg) {
         case 'ascending':
         return SorterDown(list, kind);
         break;
-        default:
-            return list;
-        break;
     }
 }
+
 exports.sort = sort;
