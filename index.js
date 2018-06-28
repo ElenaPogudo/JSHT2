@@ -25,13 +25,14 @@ const argv = require('yargs')
         yargs.options('option', {demand: false, desc: 'descending! or ascending', default: 'descending'})
             .example('$0 sort --k "kind" --o "option"')
     })
-    .command('writetoexcel', 'Change note by title', (yargs) => {
+    .command('writeToExcel', 'Change note by title', (yargs) => {
         yargs
-            .example('$0 writetoexcel')
+        yargs.options('path', {demand: false, desc: 'Path of excel file', default: './resources/Excel.xlsx'})
     })
-    .command('readfromexcel', 'Change note by title', function (yargs) {
+    .command('readFromExcel', 'Change note by title', function (yargs) {
         yargs
-            .example('$0 readfromexcel')
+        yargs.options('path', {demand: false, desc: 'Path of excel file', default: './resources/Excel.xlsx'})
+        yargs.options('kind', {demand: false, desc: 'Rewrite or add', default: 'add'})
     })
     .command('fau', 'Found and update notes', (yargs) => {
         yargs.options('title', { demand: true, desc: 'Title of a note' });
@@ -49,6 +50,7 @@ function main() {
     const body = argv.body;
     const newTitle = argv.newTitle;
     const kindOfSort = argv.kind;
+    const pathToExcel = argv.path;
     const optionOfSort = argv.option;
     const date = new Date();
 
@@ -73,11 +75,11 @@ function main() {
         case 'sort':
             console.log(notes.sort(kindOfSort, optionOfSort));
             break;
-        case 'writetoexcel':
-            console.log(notes.writetoexcel());
+        case 'writeToExcel':
+            console.log(notes.writeToExcel(pathToExcel));
             break;
-        case 'readfromexcel':
-            console.log(notes.readfromexcel());
+        case 'readFromExcel':
+            console.log(notes.readFromExcel(kindOfSort, pathToExcel));
             break;
         case 'fau':
             const chNote = {

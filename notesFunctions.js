@@ -6,7 +6,6 @@ const sorter = require('./sorter.js');
 
 const pathToNotesFile = './resources/notes.json';
 const notesList = require(pathToNotesFile);
-const pathToNotesExcelFile = './resources/Excel.xlsx';
 
 function addNote(newNote) {
     const note = notesList.find(el => el.title === newNote.title);
@@ -49,7 +48,7 @@ function sortNotes(kind, arg) {
     }
 }
 
-function writeToExcel() {
+function writeToExcel(pathToExcel) {
     const wb = new xl.Workbook();
     const ws = wb.addWorksheet('Sheet1');
     ws.cell(1, 1).string('title');
@@ -59,21 +58,29 @@ function writeToExcel() {
         ws.cell(i + 2, 1).string(element.title.toString());
         ws.cell(i + 2, 2).string(element.body.toString());
         ws.cell(i + 2, 3).string(element.date);
-        wb.write(pathToNotesExcelFile);
-    })
+        wb.write(pathToExcel);
+    });
 
     return 'Your notes was SUCCESSFULLY WRITE to excel file';
 }
 
-function readFromExcel() {
-
-    const workbook = XLSX.readFile(pathToNotesExcelFile);
+function readFromExcel(kind, pathToExcel) {
+    const workbook = XLSX.readFile(pathToExcel);
     const sheet_name_list = workbook.SheetNames;
-    XLSX.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]]).forEach(function (element) {
-        let note = notesList.find(el => el.title === element.title);
-        if(note===undefined){notesList.push(element)}});
-    rw.writer(JSON.stringify(notesList , null, 2));
-
+switch (kind){
+    case 'add':
+        XLSX.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]]).forEach(function (element) {
+            let note = notesList.find(el => el.title === element.title);
+            if(note===undefined){notesList.push(element)}});
+        rw.writer(JSON.stringify(notesList , null, 2));
+        break;
+    case 'rewrite':
+        const newNotes=[];
+        XLSX.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]]).forEach(function (element) {
+            newNotes.push(element)});
+        rw.writer(JSON.stringify(newNotes , null, 2));
+        break;
+}
     return 'Your notes was SUCCESSFULLY READ from excel file';
 }
 
@@ -110,11 +117,11 @@ const notes = {
     sort: (kind, arg) => {
         return sortNotes(kind, arg)
     },
-    writetoexcel: () => {
-        return writeToExcel()
+    writeToExcel: (path) => {
+        return writeToExcel(path)
     },
-    readfromexcel: () => {
-        return readFromExcel()
+    readFromExcel: (kind, pathToExcel) => {
+        return readFromExcel(kind, pathToExcel)
     },
     fau: (note, newTitle) => {
         return updateNote(note, newTitle)
