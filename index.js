@@ -1,6 +1,9 @@
 'use strict';
-const notes = require('./notesFunctions.js')
+const notes = require('./notesFunctions.js');
+const moment = require('moment');
+const fs = require('fs');
 const argv = require('yargs')
+
 
     .demandCommand()
     .command('add', 'Add new note to the notes list', (yargs) => {
@@ -53,33 +56,43 @@ function main() {
     const pathToExcel = argv.path;
     const optionOfSort = argv.option;
     const date = new Date();
+    let result = '';
+
+
 
     switch (operation) {
         case 'add':
             const newNote = {
                 'title': title,
                 'body': body,
-                'date': `${date.getDate()}/${date.getMonth()}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
+                'date': moment(date).format('DD/MM/YYYY HH:MM:SS')
             };
-            console.log(notes.add(newNote));
+            result = notes.add(newNote);
+            console.log(result);
             break;
         case 'list':
-            console.log(notes.list());
+            result = notes.list()
+            console.log(result);
             break;
         case 'read':
-            console.log(notes.read(title));
+            result = notes.read(title)
+            console.log(result);
             break;
         case 'remove':
-            console.log(notes.remove(title));
+            result = notes.remove(title)
+            console.log(result);
             break;
         case 'sort':
-            console.log(notes.sort(kindOfSort, optionOfSort));
+            result = notes.sort(kindOfSort, optionOfSort)
+            console.log(result);
             break;
         case 'writeToExcel':
-            console.log(notes.writeToExcel(pathToExcel));
+            result = notes.writeToExcel(pathToExcel)
+            console.log(result);
             break;
         case 'readFromExcel':
-            console.log(notes.readFromExcel(kindOfSort, pathToExcel));
+            result = notes.readFromExcel(kindOfSort, pathToExcel)
+            console.log(result);
             break;
         case 'fau':
             const chNote = {
@@ -87,7 +100,8 @@ function main() {
                 'body': body,
                 'date': `${date.getDate()}/${date.getMonth()}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
             };
-            console.log(notes.fau(chNote, newTitle));
+            result = notes.fau(chNote, newTitle)
+            console.log(result);
             break;
         default:
             console.log(`Only this commands allowed: add, list, read, remove, sort, writetoexcel, readfromexcel, fau`);

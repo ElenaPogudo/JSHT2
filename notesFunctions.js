@@ -3,9 +3,10 @@ const xl = require('excel4node');
 const XLSX = require('xlsx');
 const rw = require('./ReadWrite');
 const sorter = require('./sorter.js');
+const fs = require('fs');
 
-const pathToNotesFile = './resources/notes.json';
-const notesList = require(pathToNotesFile);
+const pathToNotesFile = './notes.json';
+const notesList = checkNotesFile();
 
 function addNote(newNote) {
     const note = notesList.find(el => el.title === newNote.title);
@@ -99,6 +100,17 @@ function updateNote(chNote, newTitle) {
     rw.writer(JSON.stringify(notesList, null, 2));
     return `The note with title [${chNote.title}] was SUCCESSFULLY UPDATED`;
 
+}
+
+function checkNotesFile() {//if there fo surh file create new one
+    try {
+        const list = require(pathToNotesFile);
+        return list;
+    } catch(err) {
+        fs.writeFileSync(pathToNotesFile, '[]');
+        const list = require(pathToNotesFile);
+        return list;
+    }
 }
 
 const notes = {
